@@ -1,0 +1,6 @@
+@reference "../../../../styles.css";
+
+.layout-container {
+  @apply block w-full;
+  @apply bg-blue-300 dark:bg-amber-300;
+}

@@ -16,7 +16,8 @@
     "module": "preserve",
     "baseUrl": "./",
     "paths": {
-      "@domains/auth/*": ["src/app/domains/auth/*"]
+      "@domains/auth/*": ["src/app/domains/auth/*"],
+      "@shared/services/*" : ["src/app/shared/services/*"]
     }
   },
   "angularCompilerOptions": {

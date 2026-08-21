@@ -1,6 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { Layout as AuthLayout} from '@domains/auth/layout/layout';
+import { Theme as ThemeService} from '@shared/services/ui/theme';
 
 @Component({
   selector: 'app-root',
@@ -9,5 +9,9 @@ import { Layout as AuthLayout} from '@domains/auth/layout/layout';
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('wilazdev-front');
+  themeService = inject(ThemeService);
+
+  changeTheme(){
+    this.themeService.toggleTheme();
+  }
 }
