@@ -1,13 +1,16 @@
-<form class="login-container">
+<form class="login-container" [formRoot]="loginForm">
   <p-iftaLabel class="login-ifta">
-    <input class="login-field" pInputText type="email" name="email" id="email">
+    <input [formField]="loginForm.email" class="login-field" pInputText type="email" id="email">
     <label for="email">e-mail</label>
   </p-iftaLabel>
   <p-iftaLabel class="login-ifta">
-    <input class="login-field" pInputText type="password" id="password">
+    <input [formField]="loginForm.password" class="login-field" pInputText type="password" id="password">
     <label for="password">password</label>
   </p-iftaLabel>
-  <button pButton class="login-button" type="submit">
-    Login
-  </button>
+  <div class="flex flex-wrap gap-1 w-full justify-center">
+    <button pButton class="login-button" type="submit">
+      Login
+    </button>
+    <p-button label="Sign in" [link]="true"></p-button>
+  </div>
 </form>

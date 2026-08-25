@@ -3,5 +3,11 @@
     <ng-template #content>
         <router-outlet></router-outlet>
     </ng-template>
+    <ng-template #footer>
+      <div class="flex gap-5 justify-end">
+        <a pButton pTooltip="WilmerAzcarateDev" rounded class="social-button" [icon]="'pi pi-github'"  href="https://github.com/WilmerAzcarateDev"></a>
+        <a pButton pTooltip="WilAzDev" rounded class="social-button" [icon]="'pi pi-linkedin'"  href="https://www.linkedin.com/in/wilmer-azcarate-a5b198255/"></a>
+      </div>
+    </ng-template>
   </p-card>
 </div>
