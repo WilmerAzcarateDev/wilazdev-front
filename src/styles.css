@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
+@import "primeicons/primeicons.css";
 
 * {
   margin: 0px;

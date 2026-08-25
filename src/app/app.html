@@ -1,8 +1,8 @@
 <router-outlet></router-outlet>
-<button (click)="changeTheme()">
-  @if (themeService.isDarkMode()) {
-    NOCTURNO
-  } @else {
-    DIURNO
-  }
+<button
+  pButton
+  rounded
+  [icon]="themeService.isDarkMode() ? 'pi pi-moon' : 'pi pi-sun'"
+  class="dark-controller"
+  (click)="changeTheme()">
 </button>

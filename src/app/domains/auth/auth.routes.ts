@@ -13,7 +13,7 @@ export const AUTH_ROUTES: Routes = [
       {
         path: 'login',
         title: 'Login',
-        loadComponent: () => import('./components/login/login').then((c) => c.Login),
+        loadComponent: () => import('./pages/login/login').then((c) => c.Login),
       },
     ],
   },

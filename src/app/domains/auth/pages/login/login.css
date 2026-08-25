@@ -1,0 +1,17 @@
+@reference "../../../../../styles.css";
+
+.login-container {
+  @apply w-full flex flex-wrap gap-5;
+}
+
+.login-ifta {
+  @apply w-full;
+}
+
+.login-field {
+  @apply w-full;
+}
+
+.login-button {
+  @apply w-full;
+}

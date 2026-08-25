@@ -1,6 +1,10 @@
 @reference "../../../../styles.css";
 
 .layout-container {
-  @apply block w-full;
-  @apply bg-blue-300 dark:bg-amber-300;
+  @apply flex w-full h-dvh;
+  @apply justify-center items-center;
+}
+
+.content {
+  @apply w-9/10 max-w-[450px];
 }
