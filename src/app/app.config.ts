@@ -6,6 +6,8 @@ import { providePrimeNG } from 'primeng/config';
 
 import Aura from '@primeuix/themes/aura';
 import { definePreset } from '@primeuix/themes';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './shared/interceptors/auth-interceptor';
 
 const MyCustomTheme = definePreset(Aura, {
   semantic: {
@@ -72,6 +74,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
+    provideHttpClient(withInterceptors([authInterceptor])),
     providePrimeNG({
       theme: {
         preset: MyCustomTheme,
