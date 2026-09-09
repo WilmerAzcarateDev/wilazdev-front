@@ -12,6 +12,6 @@ export const environment = {
       'https://wilazdev-front.jhonazcaratework.workers.dev/',
       'http://localhost:4200/'
     ],
-    scopes: ['openid', 'email', 'profile']
+    scopes: ['openid', 'email', 'profile'],
   }
 };
