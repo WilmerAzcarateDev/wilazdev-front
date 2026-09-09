@@ -6,11 +6,9 @@ export const authGuard: CanActivateFn = async () => {
   const router = inject(Router);
 
   try {
-    const user = await getCurrentUser();
-    console.log('AUTH GUARD: Autenticado', user);
+    await getCurrentUser();
     return true;
   } catch (error) {
-    console.log('AUTH GUARD: No autenticado, redirigiendo...');
     return router.createUrlTree(['/auth/login']);
   }
 };

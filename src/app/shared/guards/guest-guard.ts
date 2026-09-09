@@ -7,10 +7,8 @@ export const guestGuard: CanActivateFn = async () => {
 
   try {
     await getCurrentUser();
-    console.log('GUEST GUARD: Sesión activa, redirigiendo a admin');
     return router.createUrlTree(['/admin']);
   } catch {
-    console.log('GUEST GUARD: Sin sesión, acceso permitido al login');
     return true;
   }
 };
