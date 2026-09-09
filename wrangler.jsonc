@@ -1,6 +1,5 @@
 {
   "name": "wilazdev-front",
-  "main": "src/index.ts",
   "compatibility_date": "2024-09-01",
   "assets": {
     "directory": "dist/wilazdev-front/browser",
