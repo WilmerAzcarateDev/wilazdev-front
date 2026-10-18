@@ -6,6 +6,7 @@ import {
   SidebarNavGroup,
   SidebarNavItem,
 } from '@shared/services/ui/domain-context';
+import { UserApi } from '@shared/services/api/user/user';
 
 export type SidebarVariant = 'sidebar' | 'floating' | 'inset';
 export type SidebarCollapsible = 'offcanvas' | 'icon' | 'none';
@@ -21,6 +22,7 @@ export type SidebarSide = 'left' | 'right';
 })
 export class Sidebar {
   readonly domainContext = inject(DomainContext);
+  readonly userApi = inject(UserApi);
 
   /** Opcional: rutas explícitas del dominio; si no se pasa, se leen automáticamente del Router */
   readonly routes = input<Routes | null>(null);
@@ -34,9 +36,8 @@ export class Sidebar {
   readonly width = input<string>('16rem');
   readonly iconWidth = input<string>('3rem');
 
-  /** Marca en cabecera */
-  readonly brandName = input<string>('WilAzDev');
-  readonly brandInitial = input<string>('W');
+  /** Correo del usuario autenticado obtenido desde la DB */
+  readonly userEmail = computed(() => this.userApi.dbUser()?.email ?? '');
 
   private readonly openSubMenus = signal<Record<string, boolean>>({});
 

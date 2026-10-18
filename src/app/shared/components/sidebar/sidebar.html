@@ -28,14 +28,11 @@
         <div class="p-sidebar-header">
           <ul class="p-sidebar-menu">
             <li class="p-sidebar-menu-item">
-              <button type="button" class="p-sidebar-menu-button px-1!">
-                <div
-                  class="flex size-6 shrink-0 items-center justify-center rounded-md bg-linear-to-br from-violet-500 to-indigo-600 text-white text-xs font-bold leading-none"
-                >
-                  {{ brandInitial() }}
-                </div>
-                <span class="font-semibold text-sm">{{ brandName() }}</span>
-              </button>
+              <div class="p-sidebar-menu-button px-2!">
+                <span class="font-semibold text-sm truncate" [title]="userEmail()">
+                  {{ userEmail() }}
+                </span>
+              </div>
             </li>
           </ul>
         </div>
@@ -106,18 +103,6 @@
             </div>
           }
         </div>
-
-        <div class="p-sidebar-footer">
-          <ul class="p-sidebar-menu">
-            <li class="p-sidebar-menu-item">
-              <button type="button" class="p-sidebar-menu-button p-1!">
-                <p-avatar label="WA" shape="circle" class="size-6 shrink-0 text-xs" />
-                <span>WilAzDev</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-
         <button type="button" class="p-sidebar-rail" (click)="toggle()"></button>
       </div>
     </aside>
