@@ -7,7 +7,7 @@ import {
   AuthUser
 } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
-import { UserApi } from '@shared/services/user/user';
+import { UserApi } from '@shared/services/api/user/user';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +49,7 @@ export class Cognito {
     await signOut();
     this.currentUser.set(null);
     this.isAuthenticated.set(false);
+    this.injector.get(UserApi).clear();
   }
 
   async getAccessToken() {
@@ -76,6 +77,7 @@ export class Cognito {
           this.currentUser.set(null);
           this.isAuthenticated.set(false);
           this.isLoading.set(false);
+          this.injector.get(UserApi).clear();
           break;
       }
     });
