@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, Injector, inject, signal } from '@angular/core';
 import {
   signInWithRedirect,
   signOut,
@@ -7,11 +7,14 @@ import {
   AuthUser
 } from 'aws-amplify/auth';
 import { Hub } from 'aws-amplify/utils';
+import { UserApi } from '@shared/services/user/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Cognito {
+  private readonly injector = inject(Injector);
+
   readonly currentUser = signal<AuthUser|null > (null);
   readonly isAuthenticated = signal<boolean>(false);
   readonly isLoading = signal<boolean>(true);
@@ -27,6 +30,8 @@ export class Cognito {
       const user = await getCurrentUser();
       this.currentUser.set(user);
       this.isAuthenticated.set(true);
+      // Sincronizamos el usuario autenticado de Cognito con la base de datos (GET /api/users/check-user)
+      await this.injector.get(UserApi).checkUser();
     } catch {
       this.currentUser.set(null);
       this.isAuthenticated.set(false);
