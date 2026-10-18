@@ -1,8 +1,9 @@
 <router-outlet></router-outlet>
-<button
-  pButton
-  rounded
-  [icon]="themeService.isDarkMode() ? 'pi pi-moon' : 'pi pi-sun'"
-  class="dark-controller"
+@if(!authService.isAuthenticated()){
+<button pButton rounded [icon]="themeService.isDarkMode() ? 'pi pi-moon' : 'pi pi-sun'" class="dark-controller"
   (click)="changeTheme()">
 </button>
+}@else{
+<p-speeddial class="dark-dial" [model]="controlOptions()" [radius]="90" type="quarter-circle" direction="down-left"
+  showIcon="pi pi-bars" hideIcon="pi pi-times" />
+}

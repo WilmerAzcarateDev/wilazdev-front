@@ -3,3 +3,7 @@
 .dark-controller {
   @apply fixed bottom-6 right-6 z-50 shadow-lg;
 }
+
+.dark-dial {
+  @apply fixed top-6 right-6 z-50 shadow-lg;
+}
