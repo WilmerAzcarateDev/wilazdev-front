@@ -1,0 +1,278 @@
+@if (isLoading()) {
+  <div class="flex justify-center py-12">
+    <p-progress-spinner ariaLabel="Cargando detalle del proyecto" />
+  </div>
+} @else if (project(); as proj) {
+  <div class="flex flex-col gap-6">
+    <!-- Encabezado del Proyecto -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div class="flex flex-col gap-1">
+        <div class="flex items-center gap-3 flex-wrap">
+          <a
+            routerLink="/admin/projects"
+            class="text-sm opacity-75 hover:opacity-100 flex items-center gap-1"
+          >
+            <i class="pi pi-arrow-left text-xs"></i>
+            Proyectos
+          </a>
+          <span class="text-xs font-mono px-2 py-0.5 rounded bg-surface-100 dark:bg-surface-800 opacity-75">
+            {{ proj.id }}
+          </span>
+          <p-tag
+            [value]="proj.is_published ? 'Publicado' : 'Borrador'"
+            [severity]="proj.is_published ? 'success' : 'secondary'"
+          />
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight">{{ proj.title }}</h1>
+      </div>
+
+      @if (proj.live_url) {
+        <a
+          pButton
+          [href]="proj.live_url"
+          target="_blank"
+          rel="noopener noreferrer"
+          icon="pi pi-external-link"
+          label="Ver Demo"
+          severity="secondary"
+        ></a>
+      }
+    </div>
+
+    <!-- Banner de feedback -->
+    @if (feedbackMessage(); as msg) {
+      <div
+        class="p-3 rounded-lg text-sm flex items-center justify-between"
+        [class]="msg.type === 'success' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'"
+      >
+        <span>{{ msg.text }}</span>
+        <button type="button" class="opacity-70 hover:opacity-100" (click)="feedbackMessage.set(null)">
+          <i class="pi pi-times text-xs"></i>
+        </button>
+      </div>
+    }
+
+    <!-- Sistema de 3 Tabs -->
+    <p-tabs value="0">
+      <p-tablist>
+        <p-tab value="0">
+          <i class="pi pi-info-circle mr-2"></i>
+          General
+        </p-tab>
+        <p-tab value="1">
+          <i class="pi pi-github mr-2"></i>
+          Contexto IA & README
+        </p-tab>
+        <p-tab value="2">
+          <i class="pi pi-cog mr-2"></i>
+          Configuración
+        </p-tab>
+      </p-tablist>
+
+      <p-tabpanels>
+        <!-- TAB 1: INFORMACIÓN GENERAL -->
+        <p-tabpanel value="0">
+          <div class="flex flex-col gap-4 max-w-3xl pt-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-sm font-medium">Nombre del proyecto</label>
+                <input pInputText [(ngModel)]="title" class="w-full" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-sm font-medium">Slug (identificador URL)</label>
+                <input pInputText [(ngModel)]="slug" class="w-full" />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-medium">Descripción corta</label>
+              <textarea
+                pTextarea
+                [(ngModel)]="shortDescription"
+                rows="3"
+                class="w-full"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="sm:col-span-2 flex flex-col gap-1.5">
+                <label class="text-sm font-medium">Repositorio de GitHub (owner/repo)</label>
+                <input
+                  pInputText
+                  [(ngModel)]="githubRepo"
+                  placeholder="WilmerAzcarateDev/wilazdev-back"
+                  class="w-full"
+                />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-sm font-medium">Rama principal</label>
+                <input pInputText [(ngModel)]="githubBranch" placeholder="main" class="w-full" />
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1.5">
+              <label class="text-sm font-medium">Tecnologías (separadas por coma)</label>
+              <input
+                pInputText
+                [(ngModel)]="techStackInput"
+                placeholder="AWS CDK, FastAPI, Angular, PostgreSQL"
+                class="w-full"
+              />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="flex flex-col gap-1.5">
+                <label class="text-sm font-medium">URL Demo / Producción</label>
+                <input pInputText [(ngModel)]="liveUrl" placeholder="https://..." class="w-full" />
+              </div>
+
+              <div class="flex flex-col gap-1.5">
+                <label class="text-sm font-medium">URL Imagen de Portada</label>
+                <input
+                  pInputText
+                  [(ngModel)]="coverImageUrl"
+                  placeholder="https://..."
+                  class="w-full"
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-end pt-2">
+              <button
+                pButton
+                type="button"
+                icon="pi pi-save"
+                [label]="isSaving() ? 'Guardando...' : 'Guardar cambios'"
+                [disabled]="isSaving()"
+                (click)="saveGeneralInfo()"
+              ></button>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- TAB 2: CONTEXTO IA & README DE GITHUB -->
+        <p-tabpanel value="1">
+          <div class="flex flex-col gap-6 pt-4">
+            <!-- Bloque de sincronización del README.md -->
+            <div class="rounded-xl border border-surface-200 dark:border-surface-700 p-4 flex flex-col gap-3">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex flex-col gap-1">
+                  <h3 class="text-base font-semibold flex items-center gap-2">
+                    <i class="pi pi-github"></i>
+                    Sincronización de README.md
+                  </h3>
+                  <p class="text-xs opacity-75">
+                    Se actualiza automáticamente todos los días a las 12:00 PM vía Amazon EventBridge.
+                    @if (proj.readme_synced_at) {
+                      <span>
+                        Última sincronización:
+                        <strong>{{ proj.readme_synced_at | date:'medium' }}</strong>
+                      </span>
+                    }
+                  </p>
+                </div>
+
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-refresh"
+                  severity="secondary"
+                  [label]="isSyncingReadme() ? 'Sincronizando...' : 'Sincronizar README ahora'"
+                  [disabled]="isSyncingReadme() || !proj.github_repo"
+                  (click)="syncGithubReadme()"
+                ></button>
+              </div>
+
+              @if (proj.readme_content) {
+                <pre
+                  class="max-h-72 overflow-y-auto p-3 rounded-lg bg-surface-100 dark:bg-surface-950 text-xs font-mono whitespace-pre-wrap"
+                >{{ proj.readme_content }}</pre>
+              } @else {
+                <div class="p-4 rounded-lg bg-surface-100 dark:bg-surface-800/50 text-sm opacity-75">
+                  Aún no hay contenido de README sincronizado para este proyecto. Configura el
+                  repositorio en la pestaña General y pulsa "Sincronizar README ahora".
+                </div>
+              }
+            </div>
+
+            <!-- Bloque de Contexto Extra Privado para la IA -->
+            <div class="flex flex-col gap-2">
+              <h3 class="text-base font-semibold">Contexto Adicional Privado para la IA</h3>
+              <p class="text-xs opacity-75">
+                Escribe aquí detalles técnicos, decisiones de arquitectura/costos, retos resueltos o tu
+                rol específico que no aparezcan en el README público pero quieras que el chatbot conozca.
+              </p>
+              <textarea
+                pTextarea
+                [(ngModel)]="aiExtraContext"
+                rows="6"
+                placeholder="Ej. Elegí AWS Lambda + SSM Parameter Store para mantener costo $0 en reposo..."
+                class="w-full"
+              ></textarea>
+              <div class="flex justify-end pt-1">
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-save"
+                  [label]="isSaving() ? 'Guardando...' : 'Guardar contexto IA'"
+                  [disabled]="isSaving()"
+                  (click)="saveAiContext()"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+
+        <!-- TAB 3: CONFIGURACIÓN & ZONA DE PELIGRO -->
+        <p-tabpanel value="2">
+          <div class="flex flex-col gap-6 max-w-2xl pt-4">
+            <!-- Visibilidad -->
+            <div class="rounded-xl border border-surface-200 dark:border-surface-700 p-4 flex items-center justify-between gap-4">
+              <div class="flex flex-col gap-1">
+                <h3 class="text-base font-semibold">Visibilidad del proyecto</h3>
+                <p class="text-xs opacity-75">
+                  Controla si este proyecto está publicado en el portafolio y habilitado para el contexto de IA.
+                </p>
+              </div>
+              <p-toggleswitch [(ngModel)]="isPublished" (onChange)="togglePublished()" />
+            </div>
+
+            <!-- Zona de Peligro: Eliminar Proyecto -->
+            <div class="rounded-xl border border-red-500/40 bg-red-500/5 p-5 flex flex-col gap-4">
+              <div class="flex flex-col gap-1">
+                <h3 class="text-base font-semibold text-red-500">Zona de Peligro — Eliminar Proyecto</h3>
+                <p class="text-sm opacity-85">
+                  Esta acción eliminará permanentemente el proyecto y su contexto de la base de datos.
+                  Para confirmar, escribe exactamente el nombre del proyecto:
+                  <strong class="select-all">{{ proj.title }}</strong>
+                </p>
+              </div>
+
+              <input
+                pInputText
+                [ngModel]="deleteConfirmationInput()"
+                (ngModelChange)="deleteConfirmationInput.set($event)"
+                [placeholder]="proj.title"
+                class="w-full"
+              />
+
+              <div class="flex justify-end">
+                <button
+                  pButton
+                  type="button"
+                  severity="danger"
+                  icon="pi pi-trash"
+                  [label]="isDeleting() ? 'Eliminando...' : 'Eliminar proyecto permanentemente'"
+                  [disabled]="!canConfirmDelete() || isDeleting()"
+                  (click)="confirmDeleteProject()"
+                ></button>
+              </div>
+            </div>
+          </div>
+        </p-tabpanel>
+      </p-tabpanels>
+    </p-tabs>
+  </div>
+}
