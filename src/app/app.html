@@ -1,9 +1,18 @@
-<router-outlet></router-outlet>
 @if(!authService.isAuthenticated()){
 <button pButton rounded [icon]="themeService.isDarkMode() ? 'pi pi-moon' : 'pi pi-sun'" class="dark-controller"
   (click)="changeTheme()">
 </button>
 }@else{
 <p-speeddial class="dark-dial" [model]="controlOptions()" [radius]="90" type="quarter-circle" direction="down-left"
-  showIcon="pi pi-bars" hideIcon="pi pi-times" />
+  showIcon="pi pi-cog" hideIcon="pi pi-times" />
 }
+
+<p-drawer [(visible)]="domainContext.isDrawerOpen" header="Basic Drawer" styleClass="w-full! md:w-80!">
+  @switch (domainContext.currentDomain()) {
+    @case ('admin') {
+      <p>A slide-in panel from the edge of the screen for contextual content (Admin).</p>
+    }
+  }
+</p-drawer>
+
+<router-outlet></router-outlet>

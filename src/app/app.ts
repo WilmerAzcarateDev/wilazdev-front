@@ -1,8 +1,10 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Theme as ThemeService } from '@shared/services/ui/theme';
+import { DomainContext } from '@shared/services/ui/domain-context';
 import { Cognito } from '@shared/services/auth/cognito';
 import { SpeedDialModule } from 'primeng/speeddial';
+import { DrawerModule } from 'primeng/drawer';
 import { MenuItem } from 'primeng/api';
 import { ButtonDirective } from 'primeng/button';
 
@@ -11,13 +13,16 @@ import { ButtonDirective } from 'primeng/button';
   imports: [
     RouterOutlet,
     SpeedDialModule,
+    DrawerModule,
     ButtonDirective
   ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App {
+  
   themeService = inject(ThemeService);
+  domainContext = inject(DomainContext);
   authService = inject(Cognito);
   router = inject(Router);
 
@@ -26,13 +31,23 @@ export class App {
   });
 
   controlOptions = computed<MenuItem[]>(() => {
-    let options = [
+    let options: MenuItem[] = [
       {
         icon: this.themeIcon(),
         label: 'Tema',
         command: () => this.changeTheme()
       },
     ];
+    if (this.domainContext.hasDrawer()) {
+      options = [
+        ...options,
+        {
+          icon: 'pi pi-list',
+          label: 'Menú',
+          command: () => this.domainContext.openDrawer()
+        }
+      ];
+    }
     if (this.authService.isAuthenticated()) options = [
       ...options,
       {
@@ -40,7 +55,7 @@ export class App {
         label: 'Cerrar sesión',
         command: () => this.logout()
       }
-    ]
+    ];
     return options;
   });
 
@@ -49,6 +64,7 @@ export class App {
   }
 
   async logout() {
+    this.domainContext.closeDrawer();
     await this.authService.logout();
     this.router.navigate(['/auth/login']);
   }
