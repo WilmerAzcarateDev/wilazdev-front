@@ -1,0 +1,5 @@
+@reference "#styles";
+
+:host {
+  display: block;
+}

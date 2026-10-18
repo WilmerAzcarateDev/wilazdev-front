@@ -1,16 +1,24 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRouteSnapshot, NavigationEnd, Route, Router, Routes } from '@angular/router';
+import { MenuItem } from 'primeng/api';
 import { filter, map, startWith } from 'rxjs';
 
 export const APP_DOMAINS = ['admin', 'auth'] as const;
 export type AppDomain = (typeof APP_DOMAINS)[number];
+
+/** Configuración del ítem raíz (home) del Breadcrumb por cada dominio */
+export const DOMAIN_BREADCRUMB_HOME: Record<AppDomain, MenuItem> = {
+  admin: { icon: 'pi pi-home', routerLink: '/admin/home' },
+  auth: { icon: 'pi pi-lock', routerLink: '/auth/login' },
+};
 
 export interface SidebarRouteData {
   icon?: string;
   group?: string;
   badge?: string;
   hidden?: boolean;
+  breadcrumb?: string;
 }
 
 export interface SidebarNavSubItem {
@@ -80,6 +88,30 @@ export class DomainContext {
 
     const domainRoutes = this.extractActiveDomainRoutes(this.router.routerState.snapshot.root);
     return this.buildNavGroups(domainRoutes, `/${domain}`, url);
+  });
+
+  /** Ítem Home del Breadcrumb adaptado automáticamente según el dominio activo */
+  readonly breadcrumbHome = computed<MenuItem>(() => {
+    const domain = this.currentDomain();
+    if (domain && DOMAIN_BREADCRUMB_HOME[domain]) {
+      return DOMAIN_BREADCRUMB_HOME[domain];
+    }
+    return { icon: 'pi pi-home', routerLink: '/' };
+  });
+
+  /** Ítems del Breadcrumb generados dinámicamente según la ruta activa del dominio */
+  readonly breadcrumbItems = computed<MenuItem[]>(() => {
+    const url = this.currentUrl();
+    const domain = this.currentDomain();
+    if (!domain || domain === 'auth') {
+      return [];
+    }
+
+    return this.buildBreadcrumbFromSnapshot(
+      this.router.routerState.snapshot.root,
+      domain,
+      url,
+    );
   });
 
   toggleSidebar(): void {
@@ -165,6 +197,73 @@ export class DomainContext {
       label,
       items,
     }));
+  }
+
+  /**
+   * Construye los ítems del Breadcrumb recorriendo los segmentos activos de la ruta
+   * dentro del dominio actual.
+   */
+  buildBreadcrumbFromSnapshot(
+    root: ActivatedRouteSnapshot,
+    domain: AppDomain,
+    activeUrl = this.currentUrl(),
+  ): MenuItem[] {
+    const items: MenuItem[] = [];
+    let current: ActivatedRouteSnapshot | null = root.firstChild;
+    let accumulatedPath = '';
+
+    while (current) {
+      const segmentPaths = current.url.map((s) => s.path).filter(Boolean);
+      if (segmentPaths.length > 0) {
+        accumulatedPath += `/${segmentPaths.join('/')}`;
+      }
+
+      const routeConfig = current.routeConfig;
+      const rawPath = routeConfig?.path ?? '';
+
+      // Ignoramos el segmento raíz del dominio (ej. 'admin') porque ya está representado por `home`
+      if (rawPath && rawPath !== domain) {
+        const data = (routeConfig?.data ?? {}) as SidebarRouteData;
+        const label =
+          data.breadcrumb ??
+          (typeof routeConfig?.title === 'string'
+            ? routeConfig.title
+            : this.formatLabel(segmentPaths[segmentPaths.length - 1] ?? rawPath));
+
+        const icon = data.icon ? this.ensurePrimeIconClass(data.icon) : undefined;
+
+        // Si la ruta tiene un grupo definido y es el primer nivel del dominio, podemos incluirlo
+        if (data.group && items.length === 0) {
+          items.push({ label: data.group });
+        }
+
+        items.push({
+          label,
+          icon,
+          routerLink: accumulatedPath || `/${domain}`,
+        });
+      }
+
+      current = current.firstChild;
+    }
+
+    // Fallback por URL si el snapshot aún no resolvió hijos en la carga inicial
+    if (items.length === 0) {
+      const cleanPath = activeUrl.split('?')[0].split('#')[0];
+      const segments = cleanPath.split('/').filter(Boolean);
+      const domainSegments = segments[0] === domain ? segments.slice(1) : segments;
+
+      let currentLink = `/${domain}`;
+      for (const seg of domainSegments) {
+        currentLink += `/${seg}`;
+        items.push({
+          label: this.formatLabel(seg),
+          routerLink: currentLink,
+        });
+      }
+    }
+
+    return items;
   }
 
   private unwrapLayoutRoutes(routes: Routes): Routes {
