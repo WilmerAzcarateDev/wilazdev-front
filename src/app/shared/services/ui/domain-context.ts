@@ -154,7 +154,7 @@ export class DomainContext {
       const label =
         typeof route.title === 'string' ? route.title : this.formatLabel(route.path);
       const icon = this.ensurePrimeIconClass(data.icon ?? 'pi pi-home');
-      const groupName = data.group ?? 'Navegación';
+      const groupName = data.group ?? '';
 
       const subItems: SidebarNavSubItem[] = (route.children ?? [])
         .filter(
@@ -231,11 +231,6 @@ export class DomainContext {
             : this.formatLabel(segmentPaths[segmentPaths.length - 1] ?? rawPath));
 
         const icon = data.icon ? this.ensurePrimeIconClass(data.icon) : undefined;
-
-        // Si la ruta tiene un grupo definido y es el primer nivel del dominio, podemos incluirlo
-        if (data.group && items.length === 0) {
-          items.push({ label: data.group });
-        }
 
         items.push({
           label,

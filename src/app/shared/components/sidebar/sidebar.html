@@ -40,7 +40,9 @@
         <div class="p-sidebar-content">
           @for (group of navGroups(); track group.label) {
             <div class="p-sidebar-group">
-              <div class="p-sidebar-group-label">{{ group.label }}</div>
+              @if (group.label) {
+                <div class="p-sidebar-group-label">{{ group.label }}</div>
+              }
               <div class="p-sidebar-group-content">
                 <ul class="p-sidebar-menu">
                   @for (item of group.items; track item.routerLink) {
