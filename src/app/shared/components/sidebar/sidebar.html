@@ -1,0 +1,133 @@
+<div class="p-sidebar-layout min-h-screen! relative!">
+  @if (backdrop() && open()) {
+    <div class="p-sidebar-backdrop absolute!" (click)="collapse()"></div>
+  }
+
+  @if (side() === 'right') {
+    <main class="p-sidebar-main">
+      <div class="flex-1 p-4 flex flex-col gap-4">
+        <ng-content></ng-content>
+      </div>
+    </main>
+  }
+
+  <div
+    class="p-sidebar p-component"
+    [attr.data-side]="side()"
+    [attr.data-variant]="variant()"
+    [attr.data-collapsible]="dataCollapsible()"
+    [attr.data-collapsible-mode]="collapsible()"
+    [attr.data-overlay]="dataOverlay()"
+    [attr.data-state]="displayState()"
+    [style.--px-sidebar-width]="width()"
+    [style.--px-sidebar-width-icon]="iconWidth()"
+  >
+    <div class="p-sidebar-spacer"></div>
+    <aside class="p-sidebar-aside">
+      <div class="p-sidebar-panel">
+        <div class="p-sidebar-header">
+          <ul class="p-sidebar-menu">
+            <li class="p-sidebar-menu-item">
+              <button type="button" class="p-sidebar-menu-button px-1!">
+                <div
+                  class="flex size-6 shrink-0 items-center justify-center rounded-md bg-linear-to-br from-violet-500 to-indigo-600 text-white text-xs font-bold leading-none"
+                >
+                  {{ brandInitial() }}
+                </div>
+                <span class="font-semibold text-sm">{{ brandName() }}</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <div class="p-sidebar-content">
+          @for (group of navGroups(); track group.label) {
+            <div class="p-sidebar-group">
+              <div class="p-sidebar-group-label">{{ group.label }}</div>
+              <div class="p-sidebar-group-content">
+                <ul class="p-sidebar-menu">
+                  @for (item of group.items; track item.routerLink) {
+                    <li
+                      class="p-sidebar-menu-item"
+                      [attr.data-collapsible]="item.subItems ? '' : null"
+                    >
+                      @if (item.subItems) {
+                        <button
+                          type="button"
+                          class="p-sidebar-menu-button"
+                          [attr.data-active]="item.isActive ? 'true' : null"
+                          (click)="toggleSubMenu(item)"
+                        >
+                          <i [class]="item.icon"></i>
+                          <span>{{ item.label }}</span>
+                          <i
+                            class="pi pi-chevron-down ml-auto text-xs transition-transform duration-200"
+                            [class.rotate-180]="isSubMenuOpen(item)"
+                          ></i>
+                        </button>
+                      } @else {
+                        <a
+                          [routerLink]="item.routerLink"
+                          class="p-sidebar-menu-button"
+                          [attr.data-active]="item.isActive ? 'true' : null"
+                        >
+                          <i [class]="item.icon"></i>
+                          <span>{{ item.label }}</span>
+                        </a>
+                      }
+
+                      @if (item.badge) {
+                        <span class="p-sidebar-menu-badge">{{ item.badge }}</span>
+                      }
+
+                      @if (item.subItems && isSubMenuOpen(item)) {
+                        <ul class="p-sidebar-menu-sub">
+                          @for (sub of item.subItems; track sub.routerLink) {
+                            <li class="p-sidebar-menu-sub-item">
+                              <a
+                                [routerLink]="sub.routerLink"
+                                class="p-sidebar-menu-sub-button"
+                                [attr.data-active]="sub.isActive ? 'true' : null"
+                              >
+                                <span>{{ sub.label }}</span>
+                              </a>
+                            </li>
+                          }
+                        </ul>
+                      } @else if (!item.badge && !item.subItems) {
+                        <button type="button" class="p-sidebar-menu-action" data-show-on-hover>
+                          <i class="pi pi-ellipsis-v text-xs"></i>
+                        </button>
+                      }
+                    </li>
+                  }
+                </ul>
+              </div>
+            </div>
+          }
+        </div>
+
+        <div class="p-sidebar-footer">
+          <ul class="p-sidebar-menu">
+            <li class="p-sidebar-menu-item">
+              <button type="button" class="p-sidebar-menu-button p-1!">
+                <p-avatar label="WA" shape="circle" class="size-6 shrink-0 text-xs" />
+                <span>WilAzDev</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <button type="button" class="p-sidebar-rail" (click)="toggle()"></button>
+      </div>
+    </aside>
+  </div>
+
+  @if (side() === 'left') {
+    <main class="p-sidebar-main">
+      <div class="flex-1 p-4 flex flex-col gap-4">
+        <ng-content></ng-content>
+      </div>
+    </main>
+  }
+</div>

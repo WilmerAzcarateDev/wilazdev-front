@@ -13,6 +13,7 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'home',
         title: 'Home',
+        data: { icon: 'pi pi-home', group: 'Navegación' },
         loadComponent: () => import('./pages/home/home').then((c) => c.Home),
       },
     ],

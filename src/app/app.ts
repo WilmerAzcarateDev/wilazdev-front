@@ -4,7 +4,6 @@ import { Theme as ThemeService } from '@shared/services/ui/theme';
 import { DomainContext } from '@shared/services/ui/domain-context';
 import { Cognito } from '@shared/services/auth/cognito';
 import { SpeedDialModule } from 'primeng/speeddial';
-import { DrawerModule } from 'primeng/drawer';
 import { MenuItem } from 'primeng/api';
 import { ButtonDirective } from 'primeng/button';
 
@@ -13,7 +12,6 @@ import { ButtonDirective } from 'primeng/button';
   imports: [
     RouterOutlet,
     SpeedDialModule,
-    DrawerModule,
     ButtonDirective
   ],
   templateUrl: './app.html',
@@ -38,13 +36,13 @@ export class App {
         command: () => this.changeTheme()
       },
     ];
-    if (this.domainContext.hasDrawer()) {
+    if (this.domainContext.hasSidebar()) {
       options = [
         ...options,
         {
           icon: 'pi pi-list',
           label: 'Menú',
-          command: () => this.domainContext.openDrawer()
+          command: () => this.domainContext.toggleSidebar()
         }
       ];
     }
@@ -64,7 +62,7 @@ export class App {
   }
 
   async logout() {
-    this.domainContext.closeDrawer();
+    this.domainContext.closeSidebar();
     await this.authService.logout();
     this.router.navigate(['/auth/login']);
   }

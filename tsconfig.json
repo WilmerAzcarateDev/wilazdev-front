@@ -14,10 +14,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "baseUrl": "./",
     "paths": {
-      "@domains/auth/*": ["src/app/domains/auth/*"],
-      "@shared/services/*" : ["src/app/shared/services/*"]
+      "@domains/auth/*": ["./src/app/domains/auth/*"],
+      "@shared/services/*" : ["./src/app/shared/services/*"],
+      "@shared/components/*" : ["./src/app/shared/components/*"]
     }
   },
   "angularCompilerOptions": {
