@@ -15,7 +15,16 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    canActivate:[authGuard],
-    loadChildren: () => import('./domains/admin/admin.routes').then((r)=>r.ADMIN_ROUTES)
-  }
+    canActivate: [authGuard],
+    loadChildren: () => import('./domains/admin/admin.routes').then((r) => r.ADMIN_ROUTES),
+  },
+  {
+    path: 'errors',
+    loadChildren: () => import('./domains/errors/errors.routes').then((r) => r.ERRORS_ROUTES),
+  },
+  {
+    path: '**',
+    redirectTo: 'errors/not-found',
+  },
 ];
+

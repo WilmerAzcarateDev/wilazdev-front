@@ -4,13 +4,14 @@ import { ActivatedRouteSnapshot, NavigationEnd, Route, Router, Routes } from '@a
 import { MenuItem } from 'primeng/api';
 import { filter, map, startWith } from 'rxjs';
 
-export const APP_DOMAINS = ['admin', 'auth'] as const;
+export const APP_DOMAINS = ['admin', 'auth', 'errors'] as const;
 export type AppDomain = (typeof APP_DOMAINS)[number];
 
 /** Configuración del ítem raíz (home) del Breadcrumb por cada dominio */
 export const DOMAIN_BREADCRUMB_HOME: Record<AppDomain, MenuItem> = {
   admin: { icon: 'pi pi-home', routerLink: '/admin/home' },
   auth: { icon: 'pi pi-lock', routerLink: '/auth/login' },
+  errors: { icon: 'pi pi-exclamation-triangle', routerLink: '/errors/forbidden' },
 };
 
 export interface SidebarRouteData {
@@ -72,17 +73,17 @@ export class DomainContext {
   /** Estado abierto/expandido del Sidebar */
   readonly isSidebarOpen = signal<boolean>(true);
 
-  /** Indica si el dominio actual cuenta con Sidebar (oculto en 'auth') */
+  /** Indica si el dominio actual cuenta con Sidebar (oculto en 'auth' y 'errors') */
   readonly hasSidebar = computed<boolean>(() => {
     const domain = this.currentDomain();
-    return domain !== null && domain !== 'auth';
+    return domain !== null && domain !== 'auth' && domain !== 'errors';
   });
 
   /** Grupos de navegación generados automáticamente a partir de las rutas del dominio activo */
   readonly navGroups = computed<SidebarNavGroup[]>(() => {
     const url = this.currentUrl();
     const domain = this.currentDomain();
-    if (!domain || domain === 'auth') {
+    if (!domain || domain === 'auth' || domain === 'errors') {
       return [];
     }
 
@@ -103,7 +104,7 @@ export class DomainContext {
   readonly breadcrumbItems = computed<MenuItem[]>(() => {
     const url = this.currentUrl();
     const domain = this.currentDomain();
-    if (!domain || domain === 'auth') {
+    if (!domain || domain === 'auth' || domain === 'errors') {
       return [];
     }
 

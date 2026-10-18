@@ -3,11 +3,12 @@ import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 
 export interface DbUser {
-  id: number;
+  id: string;
   cognito_sub: string;
   username: string;
   email: string | null;
   is_active: boolean;
+  is_admin: boolean;
   created_at: string;
   updated_at: string;
 }

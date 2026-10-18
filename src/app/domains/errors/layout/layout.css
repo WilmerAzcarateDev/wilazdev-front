@@ -1,0 +1,10 @@
+@reference "#styles";
+
+.layout-container {
+  @apply flex w-full h-dvh;
+  @apply justify-center items-center;
+}
+
+.content {
+  @apply w-9/10 max-w-[450px];
+}
