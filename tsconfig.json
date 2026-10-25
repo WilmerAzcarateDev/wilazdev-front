@@ -17,6 +17,7 @@
     "paths": {
       "@env/*": ["./src/environments/*"],
       "@domains/auth/*": ["./src/app/domains/auth/*"],
+      "@shared/models/*": ["./src/app/shared/models/*"],
       "@shared/services/*" : ["./src/app/shared/services/*"],
       "@shared/components/*" : ["./src/app/shared/components/*"]
     }

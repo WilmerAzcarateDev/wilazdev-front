@@ -2,15 +2,14 @@ import { Component, computed, inject, input, signal, ViewEncapsulation } from '@
 import { RouterLink, Routes } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import {
-  DomainContext,
+  SidebarCollapsible,
   SidebarNavGroup,
   SidebarNavItem,
-} from '@shared/services/ui/domain-context';
+  SidebarSide,
+  SidebarVariant,
+} from '@shared/models/navigation.model';
 import { UserApi } from '@shared/services/api/user/user';
-
-export type SidebarVariant = 'sidebar' | 'floating' | 'inset';
-export type SidebarCollapsible = 'offcanvas' | 'icon' | 'none';
-export type SidebarSide = 'left' | 'right';
+import { DomainContext } from '@shared/services/ui/domain-context';
 
 @Component({
   selector: 'app-sidebar',

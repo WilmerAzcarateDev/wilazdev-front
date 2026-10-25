@@ -9,7 +9,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TagModule } from 'primeng/tag';
 import { TextareaModule } from 'primeng/textarea';
-import { Project, ProjectApi } from '@shared/services/api/project/project';
+import { Project } from '@shared/models/project.model';
+import { ProjectApi } from '@shared/services/api/project/project';
 
 @Component({
   selector: 'app-projects',

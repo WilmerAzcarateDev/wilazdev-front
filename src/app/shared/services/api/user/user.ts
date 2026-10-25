@@ -1,22 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-
-export interface DbUser {
-  id: string;
-  cognito_sub: string;
-  username: string;
-  email: string | null;
-  is_active: boolean;
-  is_admin: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface CheckUserResponse {
-  user: DbUser;
-  created: boolean;
-}
+import { CheckUserResponse, DbUser } from '@shared/models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -43,7 +28,7 @@ export class UserApi {
     }
 
     this.checkUserInFlight = firstValueFrom(
-      this.http.get<CheckUserResponse>(`${this.url}/check-user`)
+      this.http.get<CheckUserResponse>(`${this.url}/check-user`),
     )
       .then((response) => {
         this.dbUser.set(response.user);
